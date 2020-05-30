@@ -1,6 +1,6 @@
 const productos = {};
 
-const sequelize= require('../config/config');
+const sequelize = require("../config/config");
 
 productos.agregarProducto = async (
   producto,

@@ -1,10 +1,9 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 const tokenManejador = {};
 
-const jwtFirma = 'misupercontraseña';
+const jwtFirma = "misupercontraseña";
 
-tokenManejador.crearToken  = usuario => jwt.sign(usuario, jwtFirma);
-tokenManejador.validarToken = token =>  jwt.verify(token, jwtFirma);
+tokenManejador.crearToken = (usuario) => jwt.sign(usuario, jwtFirma);
+tokenManejador.validarToken = (token) => jwt.verify(token, jwtFirma);
 module.exports = tokenManejador;
- 

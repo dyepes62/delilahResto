@@ -4,8 +4,6 @@ const bodyParser = require("body-parser");
 
 const server = express();
 
-require("./database");
-
 server.use(bodyParser.json());
 
 // Routes
