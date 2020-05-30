@@ -70,7 +70,6 @@ const {
      })
     .delete(verificarAdmin,async (req, res) => {
       const borradoPedido = await eliminarPedido(req);
-      console.log(borradoPedido);
       if (borradoPedido.eliminarPedidos[0].affectedRows === 1) {
         res.json({
           sucess: "true",
