@@ -9,7 +9,9 @@ const {
     agregarProductosPedido,
     obtenerPedidos,
     obtenerPedidoId,
+    obtenerPedidoUsuario,
     actualizarEstadoPedido,
+    eliminarPedido
   } = require("../models/models.pedido");
 
   router
@@ -31,8 +33,17 @@ const {
       message: "El pedido ha sido añadido EXITOSAMENTE!",
     });
   })
-  .get(async (req, res) => {
-    res.json(await obtenerPedidos());
+  .get(verificarToken, async (req, res) => {
+    const nombreUsuario = req.query.usuario;
+    const reqToken= req.usuarioLogueado.usuario;
+    if (nombreUsuario===reqToken) {
+      res.json(await obtenerPedidoUsuario(nombreUsuario));
+    }
+    else if (req.usuarioLogueado.esAdmin){
+      res.json(await obtenerPedidos());
+      }else{
+        res.status(401).json('No autorizado');
+      }
   })
 
   router
@@ -57,6 +68,21 @@ const {
     .get(verificarToken,async (req, res) => {
         res.json(await obtenerPedidoId(req));
      })
+    .delete(verificarAdmin,async (req, res) => {
+      const borradoPedido = await eliminarPedido(req);
+      console.log(borradoPedido);
+      if (borradoPedido.eliminarPedidos[0].affectedRows === 1) {
+        res.json({
+          sucess: "true",
+          message: "El pedido ha sido borrado exitosamente",
+        });
+      } else {
+        res.status(400).json({
+          sucess: "false",
+          message: "Pedido no encontrado",
+        });
+      }
+   }) 
 
     
 module.exports = router;  

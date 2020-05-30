@@ -26,8 +26,8 @@ router
   })
   .delete(verificarAdmin,async (req, res) => {
     const nombreProducto = req.query.producto;
-    const nuevoProducto = await borrarProducto(nombreProducto);
-    if (nuevoProducto[0].affectedRows === 1) {
+    const borradoProducto = await borrarProducto(nombreProducto);
+    if (borradoProducto[0].affectedRows === 1) {
       res.json({
         sucess: "true",
         message: "El producto ha sido borrado exitosamente",

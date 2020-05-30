@@ -58,6 +58,28 @@ pedido.obtenerPedidoId = async (req) => {
     return result;
   };  
 
+pedido.obtenerPedidoUsuario = async (nombreUsuario) => {
+    
+    const result = {}
+    
+    result.datosPedido = await sequelize.query(   
+      "SELECT PEDIDOS.id, USUARIOS.usuario, ESTADOS.estado, PAGO.formaPago, PEDIDOS.precioTotal FROM PEDIDOS JOIN USUARIOS ON PEDIDOS.idUsuario=USUARIOS.id JOIN PAGO ON PEDIDOS.idFormaPago= PAGO.id JOIN ESTADOS ON PEDIDOS.idEstado = ESTADOS.id WHERE usuario=?",
+      {
+        type: sequelize.QueryTypes.SELECT,
+        replacements: [nombreUsuario],
+      }
+    );
+
+    result.productos = await sequelize.query(
+       
+      "SELECT PEDIDO_PRODUCTOS.idPedido, PRODUCTOS.producto, PRODUCTOS.precio, PEDIDO_PRODUCTOS.cantidad FROM PEDIDO_PRODUCTOS JOIN PEDIDOS ON PEDIDOS.id = PEDIDO_PRODUCTOS.idPedido JOIN USUARIOS ON PEDIDOS.idUsuario=USUARIOS.id JOIN PRODUCTOS ON PEDIDO_PRODUCTOS.idProducto= PRODUCTOS.id WHERE usuario=?",
+       {
+         type: sequelize.QueryTypes.SELECT,
+         replacements: [nombreUsuario],
+       } );
+    return result;
+  };    
+
 
 pedido.actualizarEstadoPedido = async (req,
     idEstado
@@ -71,5 +93,26 @@ pedido.actualizarEstadoPedido = async (req,
     );
     return result;
   };
+
+  pedido.eliminarPedido = async (req) => {
+    const result = {};
+    const idPedido = req.params.id;
+     
+
+    result.eliminarProductos = await sequelize.query(
+      "DELETE FROM PEDIDO_PRODUCTOS WHERE idPedido=?",
+      {
+        replacements: [idPedido],
+      }
+    );
+
+    result.eliminarPedidos = await sequelize.query(
+      "DELETE FROM PEDIDOS WHERE id=?",
+      {
+        replacements: [idPedido],
+      }
+    );
+    return result;
+  };  
 
   module.exports = pedido;
